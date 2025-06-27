@@ -235,7 +235,7 @@ def main():
                         help='Window size for time series')
     parser.add_argument('--input_c', type=int, default=1,
                         help='Number of input channels')
-    parser.add_argument('--output_c', type=int, default=2,
+    parser.add_argument('--output_c', type=int, default=1,
                         help='Number of output channels')
     parser.add_argument('--batch_size', type=int, default=16,
                         help='Batch size for testing')
