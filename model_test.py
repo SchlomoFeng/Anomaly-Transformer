@@ -298,7 +298,7 @@ class OnlineAnomalyDetector:
     def _calculate_anomaly_score(self, input_tensor, output, series, prior):
         """计算异常分数"""
         temperature = 50
-        criterion = nn.MSELoss(reduce=False)
+        criterion = nn.MSELoss(reduction='none')
         
         loss = torch.mean(criterion(input_tensor, output), dim=-1)
         
@@ -505,7 +505,7 @@ class OnlineAnomalyDetector:
             # 输出统计信息
             stats = self.get_statistics()
             self.logger.info(f"检测统计: {stats}")
-            print(f"\n📈 检测完成统计:")
+            print(f"\n 检测完成统计:")
             print(f"   总检测数: {stats['total_detections']}")
             print(f"   异常数量: {stats['total_anomalies']}")
             print(f"   异常率: {stats['anomaly_rate']:.2f}%")
@@ -539,7 +539,7 @@ def main():
     # 运行模式
     parser.add_argument('--mode', type=str, 
                         choices=['batch', 'online', 'test'],
-                        default='batch',
+                        default='online',
                         help='运行模式: batch-批量检测, online-在线检测, test-测试模式')
     parser.add_argument('--output_path', type=str,
                         default='detection_results.csv',
@@ -573,20 +573,20 @@ def main():
             
             # 显示统计信息
             stats = detector.get_statistics()
-            print("\n📊 检测统计:")
+            print("\n 检测统计:")
             for key, value in stats.items():
                 print(f"  {key}: {value}")
             
         elif args.mode == 'online':
             # 在线检测模式
-            print(f"🔄 启动在线检测模式，数据文件: {args.test_data_path}")
+            print(f"启动在线检测模式，数据文件: {args.test_data_path}")
             print(f"   检测间隔: {args.detection_interval}秒")
             print("   按 Ctrl+C 停止检测")
             detector.run_online_detection(args.test_data_path, args.detection_interval)
             
         elif args.mode == 'test':
             # 测试模式 - 检测几个样本
-            print("🧪 测试模式 - 检测前10个样本")
+            print("测试模式 - 检测前10个样本")
             df = pd.read_csv(args.test_data_path)
             
             for i in range(min(10, len(df))):
@@ -604,7 +604,7 @@ def main():
     finally:
         # 输出最终统计信息
         stats = detector.get_statistics()
-        print(f"\n📈 最终统计: 总检测={stats['total_detections']}, 异常={stats['total_anomalies']}, 异常率={stats['anomaly_rate']:.2f}%")
+        print(f"\n 最终统计: 总检测={stats['total_detections']}, 异常={stats['total_anomalies']}, 异常率={stats['anomaly_rate']:.2f}%")
 
 
 if __name__ == "__main__":
